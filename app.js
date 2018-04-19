@@ -8,30 +8,25 @@ const argv = yargs
 			demand: true,
 			alias: 'address',
 			describe: 'Address to fetch weather for',
-			string: true
-		}
+			string: true,
+		},
 	})
 	.help()
-	.alias('help', 'h')
-	.argv;
+	.alias('help', 'h').argv;
 
-	// geocode.geocodeAddress(argv.address, (errorMessage, result) => {
-	// 	if(errorMessage) {
-	// 		console.log(errorMessage);
-	// 	} else {
-	// 		console.log(JSON.stringify(result, undefined, 2));
-	// 	}
-	// });
-
-	const lat = '51.221838';
-	const lng = '0.2791669';
-
-	weather.getWeather(lat, lng, (errorMessage, result) => {
-		if(errorMessage) {
-			console.log(errorMessage);
-		} else {
-			console.log(JSON.stringify(result, undefined, 2));
-		}
-	});
-
-
+geocode.geocodeAddress(argv.address, (errorMessage, results) => {
+	if (errorMessage) {
+		console.log(errorMessage);
+	} else {
+		console.log(results.address);
+		weather.getWeather(results.latitude, results.longitude, (errorMessage, weatherResults) => {
+			if (errorMessage) {
+				console.log(errorMessage);
+			} else {
+				console.log(
+					`It's currently ${weatherResults.temperature}. It feels like ${weatherResults.actualTemperature}.`
+				);
+			}
+		});
+	}
+});
